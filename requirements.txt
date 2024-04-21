@@ -1,0 +1,9 @@
+Flask
+Flask-Login
+mongoengine
+confluent-kafka==2.3.0
+pandas
+ibapi
+kafka-python
+docker
+requests

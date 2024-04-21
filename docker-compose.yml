@@ -1,0 +1,82 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rootuser
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+    volumes:
+      - mongodb_data:/data/db
+
+  zookeeper:
+    container_name: algo_zookeeper
+    image: zookeeper:latest
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    container_name: algo_kafka1
+    image: confluentinc/cp-kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.68.53:9092
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    depends_on:
+      - zookeeper
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: algo_kafka-ui
+    restart: always
+    ports:
+      - 10010:8080
+    volumes:
+      - /etc/localtime:/etc/localtime
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - AUTH_TYPE="LOGIN_FORM"
+      - SPRING_SECURITY_USER_NAME=admin
+      - SPRING_SECURITY_USER_PASSWORD=pass
+  ib_producer:
+    restart: always
+    container_name: algo_IB_producer
+    build: ./docker-ib-producer
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      - kafka
+    volumes:
+      - ./utils:/utils
+      - ./log:/log
+      - ./docker-ib-producer/scripts:/scripts
+  #ib_order_agent:
+  #  restart: always
+  #  container_name: algo_IB_order_agent
+  #  build: ./docker-ib-order-agent
+  #  environment:
+  #    - TZ=Asia/Shanghai
+  #  depends_on:
+  #    - kafka
+  #  # Add other configurations such as volumes, environment variables, etc.
+  #  volumes:
+  #    - ./utils:/utils
+  #    - ./log:/log
+  #    - ./docker-ib-order-agent/scripts:/scripts
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  mongodb_data:
