@@ -3,6 +3,7 @@ from flask import render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models.ticker import Ticker 
 from app.models.ib_interface import create_contract, create_order
+from ibapi.execution import ExecutionFilter
 import time
 from datetime import datetime
 @app.route('/api/ticker_list', methods = ['GET'])
@@ -64,3 +65,11 @@ def cancel_order( order_id):
     app.ib_api.cancelOrder(order_id)
     time.sleep(2)
     return redirect(url_for("fetch_orders"))
+
+@app.route('/api/fetch_execution', methods=['GET'])
+def fetch_execution():
+    app.ib_api.execution = []  # Clear previous account values
+    exec_filter = ExecutionFilter()
+    app.ib_api.reqExecutions(1, exec_filter)
+    time.sleep(2)
+    return jsonify(app.ib_api.execution)

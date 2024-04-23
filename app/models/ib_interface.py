@@ -1,4 +1,5 @@
 from ibapi.client import EClient
+from ibapi.execution import Execution
 from ibapi.wrapper import EWrapper
 from ibapi.order import Order
 from ibapi.contract import Contract
@@ -17,6 +18,7 @@ class IBapi(EWrapper, EClient):
         EClient.__init__(self, self)
         self.orders = []
         self.positions = []
+        self.execution = []
         self.account_values = {}
         self.nextOrderId = None  # Initialize nextOrderId
 
@@ -37,6 +39,15 @@ class IBapi(EWrapper, EClient):
             "status": orderState.status
         })
 
+    def execDetails(self, reqId: int, contract: Contract, execution: Execution):
+        self.execution.append({
+            "execId":execution.execId,
+            "orderId":execution.orderId,
+            "symbol":contract.symbol,
+            "shares":execution.shares,
+            "price":execution.price
+        })
+    
     def position(self, account, contract, position, avgCost):
         # Called for each position in the account
         self.positions.append({
@@ -50,6 +61,9 @@ class IBapi(EWrapper, EClient):
         # Indicates the end of the initial open orders snapshot
         print("Received all open orders.")
 
+    def execDetailsEnd(self, reqId):
+        print("End of Execution Details")
+        
     def positionEnd(self):
         # Indicates the end of the positions snapshot
         print("Received all positions.")
