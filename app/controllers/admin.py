@@ -11,12 +11,21 @@ def ticker():
     tickers = [ticker.to_dict() for ticker in tickers]
     return render_template('ticker.html', tickers = tickers)
 
-@app.route('/ticker/add/<secType>/<market>/<symbol>', methods = ['GET'])
-@login_required
-def add_ticker(secType, market, symbol):
-    new_ticker = Ticker(ticker = symbol,
-                        market = market,
-                        instrument = secType)
+@app.route('/ticker/add/', methods = ['POST'])
+def add_ticker():
+    secType = request.form.get('secType')
+    primaryExchange = request.form.get("primaryExchange")
+    market = request.form.get('market')
+    ticker = request.form.get('ticker')
+    if primaryExchange:
+        new_ticker = Ticker(ticker = ticker,
+                            market = market,
+                            secType = secType,
+                            primaryExchange=primaryExchange)
+    else:
+                new_ticker = Ticker(ticker = ticker,
+                            market = market,
+                            secType = secType)
     new_ticker.save()
 
-    return redirect(url_for('ticker'))
+    return {'status':'OK'}
