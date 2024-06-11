@@ -7,11 +7,13 @@ from ibapi.execution import ExecutionFilter
 import asyncio
 import time
 from datetime import datetime
+from app.models.account import Order_history
 @app.route('/api/ticker_list', methods = ['GET'])
 def api_ticker():
     tickers = Ticker.objects()
     tickers = [ticker.to_dict() for ticker in tickers]
     return jsonify(tickers)
+
 
 @app.route('/api/fetch_orders', methods=['GET'])
 async def fetch_orders():
@@ -50,14 +52,13 @@ def place_order( secType, symbol, action, qty, price):
         print("Requesting the next order id")
         app.ib_api.reqIds(1)  # Request next valid order ID
 
-        print(app.ib_api.nextOrderId)
         time.sleep(2)  # Simple way to wait for the server to respond
 
     if app.ib_api.nextOrderId is not None:
         app.ib_api.placeOrder(app.ib_api.nextOrderId, contract, order)
         app.ib_api.nextOrderId += 1  # Increment the nextOrderId
-
         return jsonify({"status": "Order placed", "orderId": app.ib_api.nextOrderId - 1})
+    
     else:
         return jsonify({"status": "Error", "message": "Could not retrieve next order ID"})
     

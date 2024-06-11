@@ -50,18 +50,20 @@ class IBapi(EWrapper, EClient):
 def run_loop():
 	app.run()
 
-def get_contract(ticker):
+def get_contract(ticker,secType,primaryExchange=None):
 	contract = Contract()
 	contract.symbol = ticker
-	contract.secType = 'STK'
-	contract.exchange = 'SMART'
+	contract.secType = secType
+	contract.exchange = "SMART"
+	if primaryExchange:
+		contract.primaryExchange = primaryExchange
 	contract.currency = 'USD'
 	return contract
 
 def get_ticker_list():
 	res = requests.get("http://host.docker.internal:8080/api/ticker_list").json()
-	ticker_list = [data['ticker'] for data in res]
-	return ticker_list
+	print(res)
+	return res
 
 
 if __name__=='__main__':
@@ -76,10 +78,11 @@ if __name__=='__main__':
 	#ticker_list = ['AAPL']
 	ticker_list = get_ticker_list()
 	for i,ticker in enumerate(ticker_list,1):
-		
-		contract = get_contract(ticker)
-		ticker_dict[i]=ticker
+		contract = get_contract(ticker=ticker['ticker'],
+						  secType=ticker['secType'],
+						  primaryExchange=ticker['primaryExchange'])
+		ticker_dict[i]=ticker['ticker']
 		app.reqMktData(i, contract, '', False, False, [])
-		logger.info(f'{ticker} subscription')
+		logger.info(f'{ticker["ticker"]} subscription')
 	#time.sleep(10) #Sleep interval to allow time for incoming price data
 	#app.disconnect()
