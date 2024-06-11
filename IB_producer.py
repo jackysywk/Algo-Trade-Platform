@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 import sys
 import requests
-sys.path.append('../utils')
+sys.path.append('utils')
 from log_utils import setup_logger
 logger = setup_logger("IB Producer")
 def delivery_report(err, msg):
@@ -30,7 +30,7 @@ tick_type_dict={
 class IBapi(EWrapper, EClient):
 	def __init__(self):
 		EClient.__init__(self, self)
-		self.producer = Producer({"bootstrap.servers":"kafka:9092"})
+		self.producer = Producer({"bootstrap.servers":"localhost:9092"})
 	def tickPrice(self, reqId, tickType, price, attrib):
 		try:
 			if tickType in tick_type_dict.keys():
@@ -59,7 +59,7 @@ def get_contract(ticker):
 	return contract
 
 def get_ticker_list():
-	res = requests.get("http://host.docker.internal:8080/api/ticker_list").json()
+	res = requests.get("http://localhost:8080/api/ticker_list").json()
 	ticker_list = [data['ticker'] for data in res]
 	return ticker_list
 
@@ -68,7 +68,7 @@ if __name__=='__main__':
 	#REAL Port = 4001, Fake Port = 4002
 	app = IBapi()
 
-	app.connect('host.docker.internal',4002,10)
+	app.connect('localhost',4002,10)
 
 	api_thread = threading.Thread(target = run_loop, daemon=True)
 	api_thread.start()

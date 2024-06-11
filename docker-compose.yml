@@ -30,11 +30,10 @@ services:
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.68.53:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://192.168.68.59:9092
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
     depends_on:
       - zookeeper
-
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: algo_kafka-ui
@@ -49,31 +48,20 @@ services:
       - AUTH_TYPE="LOGIN_FORM"
       - SPRING_SECURITY_USER_NAME=admin
       - SPRING_SECURITY_USER_PASSWORD=pass
-  ib_producer:
-    restart: always
-    container_name: algo_IB_producer
-    build: ./docker-ib-producer
-    environment:
-      TZ: Asia/Shanghai
-    depends_on:
-      - kafka
-    volumes:
-      - ./utils:/utils
-      - ./log:/log
-      - ./docker-ib-producer/scripts:/scripts
-  #ib_order_agent:
-  #  restart: always
-  #  container_name: algo_IB_order_agent
-  #  build: ./docker-ib-order-agent
-  #  environment:
-  #    - TZ=Asia/Shanghai
-  #  depends_on:
-  #    - kafka
-  #  # Add other configurations such as volumes, environment variables, etc.
-  #  volumes:
-  #    - ./utils:/utils
-  #    - ./log:/log
-  #    - ./docker-ib-order-agent/scripts:/scripts
+  # ib_producer:
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   restart: always
+  #   container_name: algo_IB_producer
+  #   build: ./docker-ib-producer
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #   depends_on:
+  #     - kafka
+  #   volumes:
+  #     - ./utils:/utils
+  #     - ./log:/log
+  #     - ./docker-ib-producer/scripts:/scripts
 volumes:
   zookeeper_data:
     driver: local

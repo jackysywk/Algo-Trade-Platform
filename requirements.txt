@@ -1,5 +1,6 @@
 Flask
 Flask-Login
+flask[async]
 mongoengine
 confluent-kafka==2.3.0
 pandas

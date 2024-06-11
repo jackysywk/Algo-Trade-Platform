@@ -1,5 +1,4 @@
 from flask import Flask ## import Flask
-
 from flask_login import LoginManager
 from mongoengine import connect
 from werkzeug.security import generate_password_hash
