@@ -48,20 +48,6 @@ services:
       - AUTH_TYPE="LOGIN_FORM"
       - SPRING_SECURITY_USER_NAME=admin
       - SPRING_SECURITY_USER_PASSWORD=pass
-  # ib_producer:
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
-  #   restart: always
-  #   container_name: algo_IB_producer
-  #   build: ./docker-ib-producer
-  #   environment:
-  #     TZ: Asia/Shanghai
-  #   depends_on:
-  #     - kafka
-  #   volumes:
-  #     - ./utils:/utils
-  #     - ./log:/log
-  #     - ./docker-ib-producer/scripts:/scripts
 volumes:
   zookeeper_data:
     driver: local

@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, CASCADE, BooleanField,IntField, DateTimeField, DynamicField
+from mongoengine import Document, StringField, BooleanField,IntField, DateTimeField, DynamicField, FloatField
 from datetime import datetime
 
 class Ticker(Document):
@@ -29,10 +29,15 @@ class Strategy(Document):
     meta = {'collection':'strategy'}
     strategy = StringField(required=True)
     ticker = StringField(required=True)
+    market = StringField(required=True)
+    secType = StringField(required=True)
     parameters = DynamicField(required=True)
     active = BooleanField(required=True)
     state = StringField(required=True)
     quantity = IntField()
+    open_price = FloatField()
+    open_position_time = DateTimeField()
+    orderId = IntField()
     '''
     State workflow
     1. Monitoring Signal
@@ -42,22 +47,48 @@ class Strategy(Document):
     5. Open Position
     6. Selling Order
     '''
-    market = StringField(required=True)
     update_time = DateTimeField(required=True)
     last_logic_time = DateTimeField(required=True)
+
+    def __repr__(self):
+        return f'<Strategy {self.strategy!r} - {self.ticker!r} - {self.market!r}>'
 
     def to_dict(self):
         return {self.ticker:{
                 "strategy": self.strategy,
                 "ticker": self.ticker,
+                'market':self.market,
+                'secType':self.secType,
                 "parameters": self.parameters,
                 "active":self.active,
                 "state":self.state,
-                'market':self.market,
                 "quantity":self.quantity,
+                "orderId":self.orderId if self.orderId else None,
+                "open_price":self.open_price,
+                "open_position_time":self.open_position_time.isoformat() if self.open_position_time else None,
                 "update_time":self.update_time.isoformat(),
                 "last_logic_time":self.last_logic_time.isoformat()
                 }}
+
+    def get_open_position_time(self):
+        return {"strategy":self.strategy,
+                "ticker":self.ticker,
+                "open_position_time":self.open_position_time.isoformat() if self.open_position_time else None}
+    
+    def get_open_price(self):
+        return {"strategy":self.strategy,
+                "ticker":self.ticker,
+                "open_price":self.open_price}
+    
+    def get_open_qty(self):
+        return {"strategy":self.strategy,
+                "ticker":self.ticker,
+                "quantity":self.quantity}
+    def get_orderId(self):
+        return {"strategy":self.strategy,
+                "ticker":self.ticker,
+                "orderId":self.orderId if self.orderId else None}
+
 
 from mongoengine import connect
 if __name__ == "__main__":

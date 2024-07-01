@@ -41,9 +41,14 @@ async def fetch_account_status():
     await asyncio.sleep(0.5)
     return jsonify(app.ib_api.account_values)
 
-@app.route('/api/place_order/<secType>/<symbol>/<action>/<int:qty>/<price>', methods=['GET'])
-def place_order( secType, symbol, action, qty, price):
-    price = float(price)
+@app.route('/api/place_order', methods=['POST'])
+def place_order():
+    secType = request.form.get("secType")
+    symbol = request.form.get("symbol")
+    action = request.form.get("action")
+    qty = int(request.form.get('qty'))
+    price = float(request.form.get("price"))
+
     contract = create_contract(symbol=symbol, secType = secType)
     order = create_order(action=action,qty=qty,price=price)
     # Make sure nextOrderId is ready
