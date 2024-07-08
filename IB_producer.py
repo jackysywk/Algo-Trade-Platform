@@ -78,6 +78,8 @@ if __name__=='__main__':
 	for i,ticker in enumerate(ticker_list,1):
 		
 		contract = get_contract(ticker)
+		if ticker in ['ABNB','META','IBM']:
+			contract.primaryExchange = "NASDAQ"
 		ticker_dict[i]=ticker
 		app.reqMktData(i, contract, '', False, False, [])
 		logger.info(f'{ticker} subscription')

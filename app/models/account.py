@@ -25,15 +25,6 @@ class Order_history(Document):
                 "status":self.status,
                 "message":self.message
                 }
-    
-class Position_list(Document):
-    meta={'collection':'position_list'}
-    strategy = StringField(required=True)
-    ticker = StringField(required=True)
-    cost = FloatField(required=True)
-    amount = IntField(required=True)
-    open_date=DateTimeField(required=True)
-
 
 class Stock_equity_value(Document):
     meta={'collection':'stock_equity_value'}

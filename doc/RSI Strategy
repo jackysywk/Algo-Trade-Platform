@@ -1,0 +1,25 @@
+RSI Strategy
+
+ABAB PT 10 SL 6 HD 7 Cross over 60
+ADI PT 5 SL 8 HD 5 Cross under 40
+MSFT PT 3 SL 8 HD 7 Cross under 40 (Not priority)
+
+
+KDJ Zscore US
+AAPL PT 10 , SL 2.5 HD 20, JK LEN 250 JK Pos=False, zscore = 1, morning
+
+AMAT PT 15 SL 5 HD 20 JKLEN 100, JK Pos=False, zscore =1, morning
+GOOG PT 5 SL 5 HD 20 JKLEN 250, JK Pos =True, Z Score =1 Morning
+IBM PT 3 SL 5 HD 20, JK LEN 100, JK Pos =True, Zscore = 1, Afternoon
+LIN PT 10 SL 5 HD 20 JK Len 100 , JK Pos=False, zscore =1, morning
+MA PT 10 SL 2.5, HD 20, JK Len 50, JK Pos False, Zscore = 1, afternoon
+#####
+META PT 10 SL 2.5, HD 20 , JKLEN 250, JK Pos False, Zscore =1, morning
+#####
+
+REGN PT 5 SL 2.5, HD 20, JK 50 JK Positive = False, zscore = 1.5, afternoon
+
+TSLA PT 15 SL 5 HD 10 JKLEN 100 JK Pos True zscore 1, morning
+
+V PT 3 SL 5 HD 10 JK Len 250 JK Pos = False, Zscore 1, afternoon
+XOM PT 3 SL 2.5 HD 10 JKLEN 50, JK Pos= False, Zscore 1.5, afternoon

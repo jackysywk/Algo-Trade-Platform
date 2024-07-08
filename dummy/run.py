@@ -12,14 +12,13 @@ from strategy.strategy import bid_ask_isvalid, update_last_logic_time, make_purc
 dummy_instance = Dummy()
 strategy_name = dummy_instance.strategy_name
 dummy_instance.get_strategy_profile()
-print(dummy_instance.profile)
 
 logger = setup_logger(strategy_name, log_dir = '../log', log_file = f'{strategy_name}.log')
 
 if __name__ == "__main__":
     # print("Program Start")
-    logger.info(f'strategy started')
-
+    logger.info(f'{strategy_name} strategy started')
+    print(f'{strategy_name} strategy started')
     bid_ask_dict = dummy_instance.get_bid_ask_dict()
     while True:
         consumer = KafkaConsumer(

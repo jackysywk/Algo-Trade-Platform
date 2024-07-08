@@ -45,29 +45,34 @@ class Strategy:
 def make_purchase_order(profile, qty, price):
     secType = profile['secType']
     symbol = profile['ticker']
+    strategy = profile['strategy']
     print(f"{symbol} make purchase order")
     form_data = {
+        'strategy':strategy,
         "secType":secType,
         "symbol":symbol,
         "action":"BUY",
         "qty" : qty,
-        "price":price
+        "price":price,
+        'message':'open position'
     }
     res = requests.post("http://localhost:8080/api/place_order", data = form_data)
     return res.json()
     
     
-def make_sell_order(profile, qty, price):
-    
+def make_sell_order(profile, qty, price, message):
+    strategy = profile['strategy']
     secType = profile['secType']
     symbol = profile['ticker']
     print(f"{symbol} make sell order")
     form_data = {
+        'strategy':strategy,
         "secType":secType,
         "symbol":symbol,
         "action":"SELL",
         "qty" : qty,
-        "price":price
+        "price":price,
+        'message':message
     }
     res = requests.post("http://localhost:8080/api/place_order", data = form_data)
     return res.json()

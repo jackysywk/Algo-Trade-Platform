@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, flash, redirect, url_for, request, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from app.models.ticker import Ticker 
+from app.models.account import Order_history
 from app.models.ib_interface import create_contract, create_order
 from ibapi.execution import ExecutionFilter
 import asyncio
@@ -48,6 +49,27 @@ def place_order():
     action = request.form.get("action")
     qty = int(request.form.get('qty'))
     price = float(request.form.get("price"))
+    strategy = request.form.get("strategy")
+    message = request.form.get("message")
+    if action == "BUY":
+        order_history = Order_history(
+            strategy = strategy,
+            ticker = symbol,
+            quantity = qty,
+            open_price = price,
+            open_datetime = datetime.now(),
+            status = "Open Position"
+        )
+        order_history.save()
+    elif action == "SELL":
+        order_history = Order_history.objects(strategy=strategy,
+                                              ticker = symbol,
+                                              status = "Open Position").first()
+        order_history.close_price = price
+        order_history.close_datetime = datetime.now()
+        status = "Closed Position"
+        message = message
+        order_history.save()
 
     contract = create_contract(symbol=symbol, secType = secType)
     order = create_order(action=action,qty=qty,price=price)
